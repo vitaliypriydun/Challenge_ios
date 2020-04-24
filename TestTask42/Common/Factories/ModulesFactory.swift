@@ -24,7 +24,10 @@ class ModulesFactory {
     func makeHomeViewController() -> Module<HomeOutput, UIViewController> {
         let viewController = HomeViewController()
         let router = HomeRouter(with: viewController)
-        let presenter = HomePresenter(withView: viewController, router: router, mediaPlayerService: servicesFactory.makeMediaPlayerService())
+        let presenter = HomePresenter(withView: viewController,
+                                      router: router,
+                                      mediaPlayerService: servicesFactory.makeMediaPlayerService(),
+                                      notificationService: servicesFactory.makeNotificationService())
         viewController.presenter = presenter
         return Module(presenter: presenter, interface: makeNavigationController(with: viewController))
     }

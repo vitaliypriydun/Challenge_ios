@@ -32,6 +32,7 @@ class HomePresenter: NSObject {
     private weak var view: HomeInterface?
     private let router: HomeRouterProtocol
     private let mediaPlayerService: MediaPlayerService
+    private let notificationService: NotificationsService
     
     private var alarmDate: Date? {
         didSet {
@@ -54,10 +55,14 @@ class HomePresenter: NSObject {
         }
     }
     
-    init(withView view: HomeInterface, router: HomeRouterProtocol, mediaPlayerService: MediaPlayerService) {
+    init(withView view: HomeInterface,
+         router: HomeRouterProtocol,
+         mediaPlayerService: MediaPlayerService,
+         notificationService: NotificationsService) {
         self.view = view
         self.router = router
         self.mediaPlayerService = mediaPlayerService
+        self.notificationService = notificationService
         super.init()
         self.mediaPlayerService.set(delegate: self)
     }
@@ -71,6 +76,8 @@ extension HomePresenter: HomeOutput {
         state = .idle
         sleepTime = .off
         view?.set(alarmText: Date().toTimeString)
+        notificationService.requestPermissions()
+        notificationService.stopAlarm()
     }
     
     func viewTriggeredSleepTimerAction() {
@@ -85,11 +92,12 @@ extension HomePresenter: HomeOutput {
     }
     
     func viewTriggeredButtonAction() {
-        
         switch state {
         case .idle:
             mediaPlayerService.playSound(sleepTimer: sleepTime)
-            mediaPlayerService.scheduleAlarm(at: alarmDate ?? Date())
+            guard let alarmDate = alarmDate else { return }
+            mediaPlayerService.scheduleAlarm(at: alarmDate)
+            notificationService.scheduleAlarm(at: alarmDate)
         case .playing: mediaPlayerService.pause()
         case .recording: mediaPlayerService.pauseRecording()
         case .paused(.playing): mediaPlayerService.unpause()
@@ -115,20 +123,15 @@ extension HomePresenter: HomeOutput {
 
 extension HomePresenter: AppStateDelegate {
     
+    func errorOccured(_ error: String) {
+        view?.displayAlert(title: error)
+    }
+
     func appStateDidChange(to state: AppState) {
         self.state = state
         guard case .idle = state else { return }
         router.showAlarm { [weak self] in
             self?.mediaPlayerService.stopAlarm()
         }
-    }
-}
-
-// MARK: - MediaPlayerDelegate
-
-extension HomePresenter: MediaPlayerDelegate {
-    
-    func mediaPlayerErrorOccured(_ error: String) {
-        view?.displayAlert(title: error)
     }
 }

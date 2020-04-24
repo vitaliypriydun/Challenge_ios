@@ -13,4 +13,8 @@ class ServicesFactory: NSObject {
     func makeMediaPlayerService() -> MediaPlayerService {
         return DefaultMediaPlayerService()
     }
+    
+    func makeNotificationService() -> NotificationsService {
+        return DefaultNotificationService()
+    }
 }

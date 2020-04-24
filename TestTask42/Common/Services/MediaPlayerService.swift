@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
-typealias MediaPlayerService = SleepPlayerService & AlarmPlayerService & RecordingService
+typealias MediaPlayerService = SleepPlayerService & AlarmService & RecordingService
 
 protocol SleepPlayerService {
     
@@ -20,13 +20,13 @@ protocol SleepPlayerService {
     func update(sleepTimer: SleepTime)
     func pause()
     func unpause()
-    func set(delegate: MediaPlayerDelegate)
 }
 
-protocol AlarmPlayerService {
+protocol AlarmService {
     
     func scheduleAlarm(at date: Date)
     func stopAlarm()
+    func set(delegate: AppStateDelegate)
 }
 
 protocol RecordingService {
@@ -35,18 +35,13 @@ protocol RecordingService {
     func pauseRecording()
 }
 
-protocol MediaPlayerDelegate: AppStateDelegate {
-    
-    func mediaPlayerErrorOccured(_ error: String)
-}
-
 // MARK: - Implementation
 
 class DefaultMediaPlayerService: NSObject {
     
     var isPlaying: Bool { return audioPlayer.isPlaying }
     
-    private weak var delegate: MediaPlayerDelegate?
+    private weak var delegate: AppStateDelegate?
     private var audioPlayer = AVAudioPlayer()
     private var audioRecorder: AVAudioRecorder?
     private var timer: Timer?
@@ -123,7 +118,7 @@ class DefaultMediaPlayerService: NSObject {
             audioPlayer.play()
             MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
         } catch {
-            delegate?.mediaPlayerErrorOccured(Localization.Error.failedToOpenFile)
+            delegate?.errorOccured(Localization.Error.failedToOpenFile)
         }
         delegate?.appStateDidChange(to: .idle)
     }
@@ -171,7 +166,7 @@ class DefaultMediaPlayerService: NSObject {
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
             audioRecorder?.record()
         } catch {
-            delegate?.mediaPlayerErrorOccured(Localization.Error.failedToStartRecording)
+            delegate?.errorOccured(Localization.Error.failedToStartRecording)
         }
     }
     
@@ -186,12 +181,12 @@ class DefaultMediaPlayerService: NSObject {
                         self?.createRecordingSession()
                     } else {
                         self?.delegate?.appStateDidChange(to: .paused(from: .recording))
-                        self?.delegate?.mediaPlayerErrorOccured(Localization.Error.audioPermissionRequired)
+                        self?.delegate?.errorOccured(Localization.Error.audioPermissionRequired)
                     }
                 }
             }
         } catch {
-            delegate?.mediaPlayerErrorOccured(Localization.Error.failedToStartRecording)
+            delegate?.errorOccured(Localization.Error.failedToStartRecording)
         }
     }
     
@@ -238,7 +233,7 @@ extension DefaultMediaPlayerService: MediaPlayerService {
         guard let url = URL.natureSoundUrl else { return }
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer.numberOfLoops = -1
+            audioPlayer.numberOfLoops = sleepTimer == .off ? 1 : -1
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
             try AVAudioSession.sharedInstance().setActive(true)
             audioPlayer.play()
@@ -250,7 +245,7 @@ extension DefaultMediaPlayerService: MediaPlayerService {
             nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = audioPlayer.rate
             MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
         } catch {
-            delegate?.mediaPlayerErrorOccured(Localization.Error.failedToOpenFile)
+            delegate?.errorOccured(Localization.Error.failedToOpenFile)
         }
         setupSleepTimer(sleepTimer)
     }
@@ -278,7 +273,7 @@ extension DefaultMediaPlayerService: MediaPlayerService {
         }
     }
     
-    func set(delegate: MediaPlayerDelegate) {
+    func set(delegate: AppStateDelegate) {
         self.delegate = delegate
     }
 }

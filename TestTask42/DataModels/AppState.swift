@@ -68,4 +68,5 @@ extension AppState {
 protocol AppStateDelegate: class {
     
     func appStateDidChange(to state: AppState)
+    func errorOccured(_ error: String)
 }
