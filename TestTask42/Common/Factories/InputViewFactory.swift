@@ -14,6 +14,7 @@ class InputViewFactory {
     static func makeDatePickerView() -> UIDatePicker {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .time
+        datePicker.minimumDate = Date().addingTimeInterval(60)
         datePicker.backgroundColor = Asset.Colors.white.color
         return datePicker
     }

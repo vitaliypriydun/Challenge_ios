@@ -42,16 +42,19 @@ protocol MediaPlayerDelegate: AppStateDelegate {
 
 // MARK: - Implementation
 
-class DefaultMediaPlayerService {
+class DefaultMediaPlayerService: NSObject {
     
     var isPlaying: Bool { return audioPlayer.isPlaying }
     
     private weak var delegate: MediaPlayerDelegate?
     private var audioPlayer = AVAudioPlayer()
+    private var audioRecorder: AVAudioRecorder?
     private var timer: Timer?
+    private var alarmTimer: Timer?
     private var remainingTime: TimeInterval?
     
-    init() {
+    override init() {
+        super.init()
         setupRemoteTransportControls()
     }
     
@@ -105,10 +108,12 @@ class DefaultMediaPlayerService {
         audioPlayer.stop()
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
         delegate?.appStateDidChange(to: .recording)
+        setRecordingState()
     }
     
     /// Trigger the alarm sound
-    private func startAlarm() {
+    @objc private func playAlarm() {
+        dropAllAudio()
         guard let url = URL.alarmSoundUrl else { return }
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
@@ -121,6 +126,15 @@ class DefaultMediaPlayerService {
             delegate?.mediaPlayerErrorOccured(Localization.Error.failedToOpenFile)
         }
         delegate?.appStateDidChange(to: .idle)
+    }
+    
+    private func dropAllAudio() {
+        audioPlayer.stop()
+        audioRecorder?.stop()
+        audioRecorder = nil
+        timer?.invalidate()
+        remainingTime = nil
+        timer = nil
     }
     
     /// Updating remaining time of timer when user changes sleep timer during plaing
@@ -142,6 +156,49 @@ class DefaultMediaPlayerService {
             self.remainingTime = interval
         }
     }
+    
+    /// Record audio and save it to file
+    private func createRecordingSession() {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let audioFilename = paths[0].appendingPathComponent("recording_\(Date().toString).m4a")
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+        do {
+            audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
+            audioRecorder?.record()
+        } catch {
+            delegate?.mediaPlayerErrorOccured(Localization.Error.failedToStartRecording)
+        }
+    }
+    
+    private func setRecordingState() {
+        let recordingSession = AVAudioSession.sharedInstance()
+        do {
+            try recordingSession.setCategory(.playAndRecord, mode: .default)
+            try recordingSession.setActive(true)
+            recordingSession.requestRecordPermission { allowed in
+                DispatchQueue.main.async { [weak self] in
+                    if allowed {
+                        self?.createRecordingSession()
+                    } else {
+                        self?.delegate?.appStateDidChange(to: .paused(from: .recording))
+                        self?.delegate?.mediaPlayerErrorOccured(Localization.Error.audioPermissionRequired)
+                    }
+                }
+            }
+        } catch {
+            delegate?.mediaPlayerErrorOccured(Localization.Error.failedToStartRecording)
+        }
+    }
+    
+    private func finishRecording() {
+        audioRecorder?.stop()
+        audioRecorder = nil
+    }
 }
 
 // MARK: - MediaPlayerService
@@ -149,21 +206,30 @@ class DefaultMediaPlayerService {
 extension DefaultMediaPlayerService: MediaPlayerService {
     
     func startRecording() {
-        
+        guard let audioRecorder = audioRecorder else {
+            setRecordingState()
+            return
+        }
+        audioRecorder.record()
     }
     
     func pauseRecording() {
-        
+        audioRecorder?.pause()
     }
     
     // MARK: - Alarm
     
     func stopAlarm() {
-        
+        audioPlayer.stop()
     }
    
     func scheduleAlarm(at date: Date) {
-        
+        alarmTimer?.invalidate()
+        alarmTimer = nil
+        guard date > Date() else { return }
+        let timer = Timer(fireAt: date, interval: 0, target: self, selector: #selector(playAlarm), userInfo: nil, repeats: false)
+        RunLoop.main.add(timer, forMode: .common)
+        alarmTimer = timer
     }
     
     // MARK: - Player
@@ -211,8 +277,6 @@ extension DefaultMediaPlayerService: MediaPlayerService {
             }
         }
     }
-
-    // MARK: - Delegate
     
     func set(delegate: MediaPlayerDelegate) {
         self.delegate = delegate
@@ -230,7 +294,6 @@ private extension URL {
 private extension Date {
     
     static func dateByAdding(sleepTime: SleepTime) -> Date {
-        // TODO: Fix seconds per minute for release
-        return Date().addingTimeInterval(TimeInterval(5 * sleepTime.rawValue))
+        return Date().addingTimeInterval(TimeInterval(1 * sleepTime.rawValue)) // TODO:
     }
 }

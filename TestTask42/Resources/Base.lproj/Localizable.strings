@@ -41,3 +41,5 @@
 // MARK: - Errors
 
 "error.failed_to_open_file" = "Failed to open a media file";
+"error.failed_to_start_recording" = "Failed start recording audio";
+"error.audio_permission_required" = "Missing permission to access microphone. Go to settings and turn it on";

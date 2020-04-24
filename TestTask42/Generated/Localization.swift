@@ -33,8 +33,12 @@ internal enum Localization {
   }
 
   internal enum Error {
+    /// Missing permission to access microphone. Go to settings and turn it on
+    internal static let audioPermissionRequired = Localization.tr("Localizable", "error.audio_permission_required")
     /// Failed to open a media file
     internal static let failedToOpenFile = Localization.tr("Localizable", "error.failed_to_open_file")
+    /// Failed start recording audio
+    internal static let failedToStartRecording = Localization.tr("Localizable", "error.failed_to_start_recording")
   }
 
   internal enum Home {

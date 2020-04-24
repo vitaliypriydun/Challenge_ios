@@ -33,7 +33,12 @@ class HomePresenter: NSObject {
     private let router: HomeRouterProtocol
     private let mediaPlayerService: MediaPlayerService
     
-    private var alarm: [DateComponents] = []
+    private var alarmDate: Date? {
+        didSet {
+            guard let view = view, let alarmDate = alarmDate else { return }
+            view.set(alarmText: alarmDate.toTimeString)
+        }
+    }
     private var sleepTime: SleepTime = .off {
         didSet {
             mediaPlayerService.update(sleepTimer: sleepTime)
@@ -82,7 +87,9 @@ extension HomePresenter: HomeOutput {
     func viewTriggeredButtonAction() {
         
         switch state {
-        case .idle: mediaPlayerService.playSound(sleepTimer: sleepTime)
+        case .idle:
+            mediaPlayerService.playSound(sleepTimer: sleepTime)
+            mediaPlayerService.scheduleAlarm(at: alarmDate ?? Date())
         case .playing: mediaPlayerService.pause()
         case .recording: mediaPlayerService.pauseRecording()
         case .paused(.playing): mediaPlayerService.unpause()
@@ -95,7 +102,7 @@ extension HomePresenter: HomeOutput {
     
     func viewTriggeredDoneAction(date: Date) {
         guard let view = view else { return }
-        view.set(alarmText: date.toTimeString)
+        alarmDate = date
         view.endEditingAlarm()
     }
     
