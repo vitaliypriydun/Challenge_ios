@@ -7,7 +7,6 @@
 //
 
 import XCTest
-@testable import TestTask42
 
 class TestTask42Tests: XCTestCase {
 
@@ -15,7 +14,10 @@ class TestTask42Tests: XCTestCase {
 
     override func tearDown() { }
 
-    func test() {
-        // TODO: --
+    func testSoundAvailability() {
+        let natureUrl = Bundle.main.url(forResource: "nature", withExtension: "m4a")
+        let alarmUrl = Bundle.main.url(forResource: "alarm", withExtension: "m4a")
+        XCTAssertNotNil(natureUrl, "Missing nature media file")
+        XCTAssertNotNil(alarmUrl, "Missing alarm media file")
     }
 }

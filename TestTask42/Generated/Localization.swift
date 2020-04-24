@@ -28,6 +28,13 @@ internal enum Localization {
     internal static let play = Localization.tr("Localizable", "buttons.play")
     /// Continue recording
     internal static let record = Localization.tr("Localizable", "buttons.record")
+    /// Stop
+    internal static let stop = Localization.tr("Localizable", "buttons.stop")
+  }
+
+  internal enum Error {
+    /// Failed to open a media file
+    internal static let failedToOpenFile = Localization.tr("Localizable", "error.failed_to_open_file")
   }
 
   internal enum Home {

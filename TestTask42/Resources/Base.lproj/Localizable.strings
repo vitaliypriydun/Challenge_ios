@@ -10,6 +10,7 @@
 
 "buttons.ok" = "Ok";
 "buttons.cancel" = "Cancel";
+"buttons.stop" = "Stop";
 
 "buttons.play" = "Play";
 "buttons.pause" = "Pause";
@@ -36,3 +37,7 @@
 
 "sleep_time.off" = "off";
 "sleep_time.min" = "min";
+
+// MARK: - Errors
+
+"error.failed_to_open_file" = "Failed to open a media file";

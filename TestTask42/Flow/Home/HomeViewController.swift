@@ -96,9 +96,3 @@ extension HomeViewController: HomeInterface {
         alarmTextField.resignFirstResponder()
     }
 }
-
-// MARK: - Constants
-
-private extension TimeInterval {
-    static var duration: TimeInterval { return 0.35 }
-}

@@ -34,9 +34,9 @@ class HomePresenter: NSObject {
     private let mediaPlayerService: MediaPlayerService
     
     private var alarm: [DateComponents] = []
-    private var sleepTime: SleepTime? {
+    private var sleepTime: SleepTime = .off {
         didSet {
-            guard let view = view, let sleepTime = sleepTime else { return }
+            guard let view = view else { return }
             view.set(sleepText: sleepTime.text)
         }
     }
@@ -52,6 +52,8 @@ class HomePresenter: NSObject {
         self.view = view
         self.router = router
         self.mediaPlayerService = mediaPlayerService
+        super.init()
+        self.mediaPlayerService.set(delegate: self)
     }
 }
 
@@ -67,6 +69,7 @@ extension HomePresenter: HomeOutput {
     
     func viewTriggeredSleepTimerAction() {
         router.showSleepTimePicker { [weak self] sleepTime in
+            guard let sleepTime = sleepTime else { return}
             self?.sleepTime = sleepTime
         }
     }
@@ -76,6 +79,15 @@ extension HomePresenter: HomeOutput {
     }
     
     func viewTriggeredButtonAction() {
+        switch state {
+        case .idle: mediaPlayerService.playSound(sleepTimer: sleepTime)
+        case .playing: mediaPlayerService.pause()
+        case .recording: mediaPlayerService.pauseRecording()
+        case .paused(_, .playing): mediaPlayerService.unpause()
+        case .paused(_, .recording): mediaPlayerService.startRecording()
+        case .paused: mediaPlayerService.unpause()
+        case .none: return
+        }
         state = state?.next
     }
     
@@ -99,5 +111,14 @@ extension HomePresenter: AppStateDelegate {
         if case .idle = state {
             view?.displayAlert(title: Localization.Alert.title)
         }
+    }
+}
+
+// MARK: - MediaPlayerDelegate
+
+extension HomePresenter: MediaPlayerDelegate {
+    
+    func mediaPlayerErrorOccured(_ error: String) {
+        view?.displayAlert(title: error)
     }
 }

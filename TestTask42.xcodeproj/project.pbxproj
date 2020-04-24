@@ -12,6 +12,8 @@
 		FA2F1BBC245112720003F30D /* MediaPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2F1BBB245112720003F30D /* MediaPlayerService.swift */; };
 		FA2F1BBE245112F10003F30D /* AlertDisplaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2F1BBD245112F10003F30D /* AlertDisplaying.swift */; };
 		FA2F1BC0245115BF0003F30D /* InputViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2F1BBF245115BF0003F30D /* InputViewFactory.swift */; };
+		FA368FCB2452E54C003B6699 /* alarm.m4a in Resources */ = {isa = PBXBuildFile; fileRef = FA368FC92452E54C003B6699 /* alarm.m4a */; };
+		FA368FCC2452E54C003B6699 /* nature.m4a in Resources */ = {isa = PBXBuildFile; fileRef = FA368FCA2452E54C003B6699 /* nature.m4a */; };
 		FA7C79922430F2A100183985 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7C79912430F2A100183985 /* AppDelegate.swift */; };
 		FA7C799B2430F2A500183985 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA7C799A2430F2A500183985 /* Assets.xcassets */; };
 		FA7C799E2430F2A500183985 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA7C799C2430F2A500183985 /* LaunchScreen.storyboard */; };
@@ -64,6 +66,8 @@
 		FA2F1BBB245112720003F30D /* MediaPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPlayerService.swift; sourceTree = "<group>"; };
 		FA2F1BBD245112F10003F30D /* AlertDisplaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDisplaying.swift; sourceTree = "<group>"; };
 		FA2F1BBF245115BF0003F30D /* InputViewFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputViewFactory.swift; sourceTree = "<group>"; };
+		FA368FC92452E54C003B6699 /* alarm.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = alarm.m4a; sourceTree = "<group>"; };
+		FA368FCA2452E54C003B6699 /* nature.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = nature.m4a; sourceTree = "<group>"; };
 		FA7C798E2430F2A100183985 /* Boosters Challenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Boosters Challenge.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA7C79912430F2A100183985 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FA7C799A2430F2A500183985 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -141,6 +145,15 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		FA368FCD2452E552003B6699 /* Audio Files */ = {
+			isa = PBXGroup;
+			children = (
+				FA368FC92452E54C003B6699 /* alarm.m4a */,
+				FA368FCA2452E54C003B6699 /* nature.m4a */,
+			);
+			path = "Audio Files";
+			sourceTree = "<group>";
+		};
 		FA7C79852430F2A100183985 = {
 			isa = PBXGroup;
 			children = (
@@ -197,6 +210,7 @@
 		FA7C79C62430F6B600183985 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FA368FCD2452E552003B6699 /* Audio Files */,
 				FA7C799A2430F2A500183985 /* Assets.xcassets */,
 				FA7C79C12430F42D00183985 /* Colors.xcassets */,
 				FA7C799C2430F2A500183985 /* LaunchScreen.storyboard */,
@@ -404,7 +418,9 @@
 			files = (
 				FA7C7A7B243127A600183985 /* Localizable.strings in Resources */,
 				FA7C79C22430F42D00183985 /* Colors.xcassets in Resources */,
+				FA368FCB2452E54C003B6699 /* alarm.m4a in Resources */,
 				FA7C799E2430F2A500183985 /* LaunchScreen.storyboard in Resources */,
+				FA368FCC2452E54C003B6699 /* nature.m4a in Resources */,
 				FA7C799B2430F2A500183985 /* Assets.xcassets in Resources */,
 				FA7C7A5E24311DB400183985 /* HomeViewController.xib in Resources */,
 			);
@@ -697,7 +713,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.vp.TestTask42;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vp.boostersChallenge;
 				PRODUCT_NAME = "Boosters Challenge";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -716,7 +732,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.vp.TestTask42;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vp.boostersChallenge;
 				PRODUCT_NAME = "Boosters Challenge";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -741,7 +757,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestTask42.app/TestTask42";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Boosters Challenge.app/Boosters Challenge";
 			};
 			name = Debug;
 		};
@@ -763,7 +779,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestTask42.app/TestTask42";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Boosters Challenge.app/Boosters Challenge";
 			};
 			name = Release;
 		};
