@@ -12,15 +12,19 @@ Things I didn't achieve:
 3) testing. have no experience with testing avfoundation related code
 
 About app: 
+
 Architecture - MVP (the style similar to SurfMVP).
+
 The only singleton in the project is ModulesFactory, all other objects are injected. No DI framework used. Each service is injected into presenter in modules factory when presenter is created. Services inject beetween themself in ServiceFactory file. 
 All assets, colors and strings are stored in /Generated folder, created by SwiftGen.
+Recorded audio can be viewed and played from Files app.
 
 Dark mode included. 
 
 3rd party frameworks - SwiftLint, SwiftGen 
 
-Author
+Author:
+
 Vitalii Pryidun
 
 P.S. don't be scared of "42" number, it's just movie reference, not the quantity of my tries :)
