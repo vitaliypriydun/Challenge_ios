@@ -1,9 +1,11 @@
 
 Getting Started
+
 This app is the result of iOS Developer Challenge.
 
 Please note: 
 Due to lack of experience with media player and audio recording - I guess there are best practices which I don't know about, so my code may not look polished. Hopefully I'll investigate more and find some best practices for that 
+
 Things I didn't achieve: 
 1) resuming playing when interacting with other players 
 2) covering all alternative cases and edge-cases 
