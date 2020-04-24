@@ -1,0 +1,38 @@
+/*
+  Localizable.strings
+  TestTask42
+
+  Created by Vitalii on 23.04.2020.
+  Copyright © 2020 com.vitalii_pryidun. All rights reserved.
+*/
+
+// MARK: - Buttons
+
+"buttons.ok" = "Ok";
+"buttons.cancel" = "Cancel";
+
+"buttons.play" = "Play";
+"buttons.pause" = "Pause";
+"buttons.record" = "Continue recording";
+
+// MARK: - Homepage
+
+"home.title" = "";
+"home.sleep_timer" = "Sleep Timer";
+"home.alarm" = "Alarm";
+
+// MARK: - States
+
+"state.idle" = "";
+"state.playing" = "Playing";
+"state.recording" = "Recording";
+"state.paused" = "Paused";
+
+// MARK: - Alert
+
+"alert.title" = "Alarm went off";
+
+// MARK: - Sleep Time
+
+"sleep_time.off" = "off";
+"sleep_time.min" = "min";

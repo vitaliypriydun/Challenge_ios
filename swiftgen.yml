@@ -1,0 +1,14 @@
+xcassets:
+  inputs:
+    - TestTask42/Resources/Assets.xcassets
+    - TestTask42/Resources/Colors.xcassets
+  outputs:
+    templateName: swift4
+    output: TestTask42/Generated/Assets.swift
+strings:
+  inputs: TestTask42/Resources/Base.lproj/Localizable.strings
+  filter: .+\.strings$
+  outputs:
+    - templateName: structured-swift4
+      output: TestTask42/Generated/Localization.swift
+      params: {enumName: Localization}
