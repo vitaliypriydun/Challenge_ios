@@ -289,6 +289,6 @@ private extension URL {
 private extension Date {
     
     static func dateByAdding(sleepTime: SleepTime) -> Date {
-        return Date().addingTimeInterval(TimeInterval(1 * sleepTime.rawValue)) // TODO:
+        return Date().addingTimeInterval(TimeInterval(60 * sleepTime.rawValue))
     }
 }
