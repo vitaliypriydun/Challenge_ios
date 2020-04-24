@@ -25,4 +25,13 @@ class AlertFactory {
         }))
         return alert
     }
+    
+    static func makeAlarm(handler: @escaping Handler) -> UIAlertController {
+        let alert = UIAlertController(title: nil, message: Localization.Alert.title, preferredStyle: .alert)
+        alert.addAction(.init(title: Localization.Buttons.stop, style: .destructive, handler: { _ in
+            handler()
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        return alert
+    }
 }

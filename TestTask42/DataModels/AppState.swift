@@ -13,7 +13,7 @@ enum AppState {
     case idle
     case playing
     case recording
-    indirect case paused(at: Date, from: AppState)
+    indirect case paused(from: AppState)
 }
 
 // MARK: - Flow
@@ -23,8 +23,9 @@ extension AppState {
     var next: AppState {
         switch self {
         case .idle: return .playing
-        case .playing, .recording: return .paused(at: Date(), from: .playing)
-        case .paused(_, let state): return state
+        case .playing: return .paused(from: .playing)
+        case .recording: return .paused(from: .recording)
+        case .paused(let state): return state
         }
     }
     
@@ -33,7 +34,7 @@ extension AppState {
         case .idle: return nil
         case .playing: return .recording
         case .recording: return .idle
-        case .paused(_, let state): return state.autoNext
+        case .paused(let state): return state.autoNext
         }
     }
 }
@@ -54,8 +55,8 @@ extension AppState {
     var button: String {
         switch self {
         case .idle: return Localization.Buttons.play
-        case .paused(_, .playing): return Localization.Buttons.play
-        case .paused(_, .recording): return Localization.Buttons.record
+        case .paused(.playing): return Localization.Buttons.play
+        case .paused(.recording): return Localization.Buttons.record
         case .playing, .recording: return Localization.Buttons.pause
         case .paused: return Localization.Buttons.play
         }

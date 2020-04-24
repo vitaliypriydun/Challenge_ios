@@ -36,6 +36,7 @@ class HomePresenter: NSObject {
     private var alarm: [DateComponents] = []
     private var sleepTime: SleepTime = .off {
         didSet {
+            mediaPlayerService.update(sleepTimer: sleepTime)
             guard let view = view else { return }
             view.set(sleepText: sleepTime.text)
         }
@@ -79,12 +80,13 @@ extension HomePresenter: HomeOutput {
     }
     
     func viewTriggeredButtonAction() {
+        
         switch state {
         case .idle: mediaPlayerService.playSound(sleepTimer: sleepTime)
         case .playing: mediaPlayerService.pause()
         case .recording: mediaPlayerService.pauseRecording()
-        case .paused(_, .playing): mediaPlayerService.unpause()
-        case .paused(_, .recording): mediaPlayerService.startRecording()
+        case .paused(.playing): mediaPlayerService.unpause()
+        case .paused(.recording): mediaPlayerService.startRecording()
         case .paused: mediaPlayerService.unpause()
         case .none: return
         }
@@ -108,8 +110,9 @@ extension HomePresenter: AppStateDelegate {
     
     func appStateDidChange(to state: AppState) {
         self.state = state
-        if case .idle = state {
-            view?.displayAlert(title: Localization.Alert.title)
+        guard case .idle = state else { return }
+        router.showAlarm { [weak self] in
+            self?.mediaPlayerService.stopAlarm()
         }
     }
 }
